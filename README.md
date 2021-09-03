@@ -1,4 +1,4 @@
-# Player-Poop
+# Player Poop
 Makes a player poop
 
 ## Permissions
