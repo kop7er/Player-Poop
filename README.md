@@ -16,4 +16,4 @@ Makes a player poop
 
 ## Example Video
 
-Uploading Player Poop.mp4…
+https://user-images.githubusercontent.com/58952825/132067618-6a019090-8824-4693-a806-2386493fa93a.mp4
