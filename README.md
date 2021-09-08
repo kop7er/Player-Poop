@@ -1,5 +1,5 @@
 # Player Poop
-Makes a player poop
+Makes a player poop after eating food
 
 ## Permissions
 
@@ -10,7 +10,7 @@ Makes a player poop
 ``` json
 {
   "Probability Of Pooping (1-100)": 50,
-  "Only Poop If The Food Bar Is At Max": false
+  "Only Poop If The Food Bar Is Full": false
 }
 ```
 
