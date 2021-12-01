@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("Player Poop", "Kopter", "1.0.0")]
+    [Info("Player Poop", "Kopter", "1.0.1")]
     [Description("Makes A Player Poop After Eating Food")]
 
     public class PlayerPoop : RustPlugin
@@ -30,7 +30,7 @@ namespace Oxide.Plugins
 
         private void OnItemUse(Item item, int amount)
         {
-            if (item == null || item.info.category != ItemCategory.Food || Random.Range(0, 100) < poopingProbability) return;
+            if (item == null || item.info.category != ItemCategory.Food || item.info.shortname.Contains("seed") || Random.Range(0, 100) < poopingProbability) return;
 
             ItemContainer container = item.GetRootContainer();
 
