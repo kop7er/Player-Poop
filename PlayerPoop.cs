@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("Player Poop", "Kopter", "1.1.1")]
+    [Info("Player Poop", "Kopter", "1.1.2")]
     [Description("Makes A Player Poop After Eating Food")]
 
     public class PlayerPoop : RustPlugin
@@ -28,6 +28,7 @@ namespace Oxide.Plugins
             else poopingProbability = config.probabilityOfPooping;
 
             permission.RegisterPermission(ignorePermission, this);
+            permission.RegisterPermission(canPoopPermission, this);
         }
 
         private void OnItemUse(Item item, int amount)
