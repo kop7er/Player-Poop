@@ -10,6 +10,7 @@ Makes a player poop after eating food
 
 ``` json
 {
+  "Requires Permission To Poop": false,
   "Probability Of Pooping (1-100)": 50,
   "Only Poop If The Food Bar Is Full": false
 }
