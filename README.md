@@ -4,6 +4,7 @@ Makes a player poop after eating food
 ## Permissions
 
 * `playerpoop.ignore` -- Blocks player from pooping
+* `playerpoop.canpoop` -- Permission needed to poop if enabled on the config Disabled by default
 
 ## Configuration
 
