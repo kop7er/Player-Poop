@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("Player Poop", "Kopter", "1.0.1")]
+    [Info("Player Poop", "Kopter", "1.1.1")]
     [Description("Makes A Player Poop After Eating Food")]
 
     public class PlayerPoop : RustPlugin
@@ -11,7 +11,9 @@ namespace Oxide.Plugins
         #region Variables
 
         private int poopingProbability = 50;
+        
         private const string ignorePermission = "playerpoop.ignore";
+        private const string canPoopPermission = "playerpoop.canpoop";
         private const string horseDungShortname = "horsedung";
 
         #endregion
@@ -38,7 +40,7 @@ namespace Oxide.Plugins
 
             BasePlayer player = container.GetOwnerPlayer();
 
-            if (player == null || ((player.metabolism.calories.value != player.metabolism.calories.max) && config.maxFullBar) || permission.UserHasPermission(player.UserIDString, ignorePermission)) return;
+            if (player == null || ((player.metabolism.calories.value != player.metabolism.calories.max) && config.maxFullBar) || permission.UserHasPermission(player.UserIDString, ignorePermission) || (config.requiresPermission && !permission.UserHasPermission(player.UserIDString, canPoopPermission))) return;
 
             Item horseDung = ItemManager.CreateByName(horseDungShortname);
 
@@ -57,6 +59,9 @@ namespace Oxide.Plugins
 
         private class ConfigData
         {
+            [JsonProperty(PropertyName = "Requires Permission To Poop")]
+            public bool requiresPermission = false;
+            
             [JsonProperty(PropertyName = "Probability Of Pooping (1-100)")]
             public int probabilityOfPooping = 50;
 
