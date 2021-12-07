@@ -1,6 +1,10 @@
 # Player Poop
 Makes a player poop after eating food
 
+Trailer: https://youtu.be/rN-UaKcnWxM
+
+Demo: https://youtu.be/VbC70v2suNs
+
 ## Permissions
 
 * `playerpoop.ignore` -- Blocks player from pooping
@@ -17,7 +21,3 @@ Makes a player poop after eating food
   "Play Scream Sound When Pooping": false
 }
 ```
-
-## Example Video
-
-[![Player Poop - A 𝘚𝘩𝘪𝘵𝘵𝘺 Rust Plugin](https://img.youtube.com/vi/rN-UaKcnWxM/0.jpg)](https://www.youtube.com/watch?v=rN-UaKcnWxM)
