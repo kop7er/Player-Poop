@@ -20,4 +20,4 @@ Makes a player poop after eating food
 
 ## Example Video
 
-https://youtu.be/rN-UaKcnWxM
+[![Player Poop - A 𝘚𝘩𝘪𝘵𝘵𝘺 Rust Plugin](https://img.youtube.com/vi/rN-UaKcnWxM/0.jpg)](https://www.youtube.com/watch?v=rN-UaKcnWxM)
