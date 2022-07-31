@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("Player Poop", "Kopter", "2.0.0")]
+    [Info("Player Poop", "Kopter", "3.0.0")]
     [Description("Makes A Player Poop After Eating Food")]
 
     public class PlayerPoop : RustPlugin
@@ -18,7 +18,10 @@ namespace Oxide.Plugins
         private const string horseDungShortname = "horsedung";
 
         private const string ignorePermission = "playerpoop.ignore";
+
         private const string canPoopPermission = "playerpoop.canpoop";
+
+        private const string splashEffect = "assets/bundled/prefabs/fx/water/midair_splash.prefab";
 
         private const string screamSound = "assets/bundled/prefabs/fx/player/beartrap_scream.prefab";
 
@@ -61,34 +64,33 @@ namespace Oxide.Plugins
 
             if (config.playScreamSound) Effect.server.Run(screamSound, player.transform.position);
 
+            if (config.splashWaterEffect && item.info.shortname.Contains("raw")) Effect.server.Run(splashEffect, player.transform.position);
+                    
             if (config.sitPlayer && !(player.isMounted || player.IsFlying || player.IsSwimming()))
             {
                 BaseMountable invisibleChair = GameManager.server.CreateEntity(invisibleChairPrefab, player.transform.position, player.transform.rotation) as BaseMountable;
 
-                if (invisibleChair == null)
+                if (invisibleChair != null)
                 {
-                    horseDung.Drop(player.transform.position, player.GetDropVelocity());
-                    return;
+                    invisibleChair.Spawn();
+
+                    spawnedChairs.Add(invisibleChair);
+
+                    player.MountObject(invisibleChair);
+
+                    timer.Once(3f, () => {
+
+                        spawnedChairs.Remove(invisibleChair);
+
+                        invisibleChair?.Kill();
+
+                    });
                 }
-
-                invisibleChair.Spawn();
-
-                spawnedChairs.Add(invisibleChair);
-
-                player.MountObject(invisibleChair);
-
-                timer.Once(3f, () => {
-
-                    invisibleChair?.Kill();
-
-                    spawnedChairs.Remove(invisibleChair);
-
-                    horseDung.Drop(player.transform.position, player.GetDropVelocity());
-
-                });
             }
 
-            else horseDung.Drop(player.transform.position, player.GetDropVelocity());
+            if (FertilizePlanterBoxes(player) && !config.spawnPoopIfFertilized) return;
+
+            horseDung.Drop(player.transform.position, player.GetDropVelocity());
         }
 
         private void Unload()
@@ -97,6 +99,45 @@ namespace Oxide.Plugins
                 chair?.Kill();
 
             spawnedChairs.Clear();
+        }
+
+        #endregion
+
+        #region Methods 
+
+        private bool FertilizePlanterBoxes(BasePlayer player)
+        {
+            if (config.fertilizePlanterBoxes)
+            {
+                var entities = new List<BaseEntity>();
+
+                Vis.Entities(player.transform.position, 0.1f, entities);
+
+                foreach (var entity in entities)
+                {
+                    if (entity is PlanterBox)
+                    {
+                        var planterBox = entity as PlanterBox;
+
+                        foreach (BaseEntity child in planterBox.children)
+                        {
+                            if (child != null)
+                            {
+                                GrowableEntity growableEntity = child as GrowableEntity;
+
+                                if (growableEntity != null)
+                                {
+                                    growableEntity.Fertilize();
+                                }
+                            }
+                        }
+
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         #endregion
@@ -121,6 +162,15 @@ namespace Oxide.Plugins
 
             [JsonProperty(PropertyName = "Play Scream Sound When Pooping")]
             public bool playScreamSound = false;
+
+            [JsonProperty(PropertyName = "Splash Water Effect When Pooping If Raw Food")]
+            public bool splashWaterEffect = false;
+
+            [JsonProperty(PropertyName = "Fertilize Planter Boxes When Pooped On Top")]
+            public bool fertilizePlanterBoxes = false;
+
+             [JsonProperty(PropertyName = "Spawn Poop Entity When Planter Boxes Are Fertilized")]
+            public bool spawnPoopIfFertilized = false;
         }
 
         protected override void LoadConfig()
