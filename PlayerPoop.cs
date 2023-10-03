@@ -1,12 +1,10 @@
 ﻿using Newtonsoft.Json;
-
 using System.Collections.Generic;
-
 using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("Player Poop", "Kopter", "3.0.0")]
+    [Info("Player Poop", "Kopter", "3.0.1")]
     [Description("Makes A Player Poop After Eating Food")]
 
     public class PlayerPoop : RustPlugin
@@ -35,9 +33,9 @@ namespace Oxide.Plugins
 
         private void Init()
         {
-            if (config.probabilityOfPooping < 1 || config.probabilityOfPooping > 100) 
+            if (config.probabilityOfPooping < 1 || config.probabilityOfPooping > 100)
                 Puts("The probability of pooping must be between 1 and 100! Loaded default value: 50!");
-          
+
             else poopingProbability = config.probabilityOfPooping;
 
             permission.RegisterPermission(ignorePermission, this);
@@ -46,7 +44,7 @@ namespace Oxide.Plugins
 
         private void OnItemUse(Item item, int amount)
         {
-            if (item == null || item.info.category != ItemCategory.Food || item.info.shortname.Contains("seed") || Random.Range(0, 100) < poopingProbability) return;
+            if (item == null || item.info.category != ItemCategory.Food || item.info.shortname.Contains("seed") || Random.Range(0, 100) > poopingProbability) return;
 
             ItemContainer container = item.GetRootContainer();
 
@@ -55,7 +53,7 @@ namespace Oxide.Plugins
             BasePlayer player = container.GetOwnerPlayer();
 
             if (player == null || ((player.metabolism.calories.value != player.metabolism.calories.max) && config.maxFullBar) || permission.UserHasPermission(player.UserIDString, ignorePermission) || (config.requiresPermission && !permission.UserHasPermission(player.UserIDString, canPoopPermission))) return;
-            
+
             Item horseDung = ItemManager.CreateByName(horseDungShortname);
 
             if (horseDung == null) return;
@@ -65,7 +63,7 @@ namespace Oxide.Plugins
             if (config.playScreamSound) Effect.server.Run(screamSound, player.transform.position);
 
             if (config.splashWaterEffect && item.info.shortname.Contains("raw")) Effect.server.Run(splashEffect, player.transform.position);
-                    
+
             if (config.sitPlayer && !(player.isMounted || player.IsFlying || player.IsSwimming()))
             {
                 BaseMountable invisibleChair = GameManager.server.CreateEntity(invisibleChairPrefab, player.transform.position, player.transform.rotation) as BaseMountable;
@@ -78,7 +76,8 @@ namespace Oxide.Plugins
 
                     player.MountObject(invisibleChair);
 
-                    timer.Once(3f, () => {
+                    timer.Once(3f, () =>
+                    {
 
                         spawnedChairs.Remove(invisibleChair);
 
@@ -169,7 +168,7 @@ namespace Oxide.Plugins
             [JsonProperty(PropertyName = "Fertilize Planter Boxes When Pooped On Top")]
             public bool fertilizePlanterBoxes = false;
 
-             [JsonProperty(PropertyName = "Spawn Poop Entity When Planter Boxes Are Fertilized")]
+            [JsonProperty(PropertyName = "Spawn Poop Entity When Planter Boxes Are Fertilized")]
             public bool spawnPoopIfFertilized = false;
         }
 
